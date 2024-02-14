@@ -5,6 +5,7 @@ import { FaEnvelope, FaEye, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc"; 
 import { MdPassword } from "react-icons/md";
 import { motion } from "framer-motion";
+import { signInWithGitHub, signInWithGoogle } from "../utils/helpers";
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
@@ -79,7 +80,8 @@ const SignUp = () => {
 
                     {/* sign in with google */}
 
-                    <motion.div className="flex items-center justify-center gap-3 bg-[rgba(256,256,256,0.2)] backdrop-blur-md w-full h-[50px] rounded-xl hover:bg-[rgba(256,256,256,0.4)] cursor-pointer" whileTap={{scale:0.9}}>
+                    <motion.div onClick={signInWithGoogle} 
+                    className="flex items-center justify-center gap-3 bg-[rgba(256,256,256,0.2)] backdrop-blur-md w-full h-[50px] rounded-xl hover:bg-[rgba(256,256,256,0.4)] cursor-pointer" whileTap={{scale:0.9}}>
                         <FcGoogle className="text-3xl"/>
                         <p className="text-xl text-white">Sign in with Google</p>
                     </motion.div>
@@ -93,7 +95,8 @@ const SignUp = () => {
                     </div>
 
                     {/* sign in with github */}
-                    <motion.div className="flex items-center justify-center gap-3 bg-[rgba(256,256,256,0.2)] backdrop-blur-md w-full h-[50px] rounded-xl hover:bg-[rgba(256,256,256,0.4)] cursor-pointer" whileTap={{scale:0.9}}>
+                    <motion.div onClick={signInWithGitHub} 
+                    className="flex items-center justify-center gap-3 bg-[rgba(256,256,256,0.2)] backdrop-blur-md w-full h-[50px] rounded-xl hover:bg-[rgba(256,256,256,0.4)] cursor-pointer" whileTap={{scale:0.9}}>
                         <FaGithub className="text-3xl"/>
                         <p className="text-xl text-white">Sign in with Git Hub</p>
                     </motion.div>
