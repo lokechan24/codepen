@@ -4,14 +4,58 @@ import UserAuthInput from "../components/UserAuthInput";
 import { FaEnvelope, FaEye, FaGithub } from "react-icons/fa"; 
 import { FcGoogle } from "react-icons/fc"; 
 import { MdPassword } from "react-icons/md";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { signInWithGitHub, signInWithGoogle } from "../utils/helpers";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase.config";
+import { fadeInOut } from "../animations";
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [getEmailValidationStatus, setGetEmailValidationStatus] = useState(false);
-    const[isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(false);
+    const [alert, setAlert] = useState(false);
+    const [alertMsg, setAlertMsg] = useState("");
+
+    const createNewUser = async () => {
+        if(getEmailValidationStatus) {
+            await createUserWithEmailAndPassword(auth, email, password).then((userCred) => {
+                if(userCred) {
+                    console.log(userCred);
+                }
+            })
+            .catch((err) => console.log(err));
+        }
+    };
+
+    const loginWithEmailPassword = async () => {
+        if(getEmailValidationStatus) {
+            await signInWithEmailAndPassword(auth, email, password).then((userCred) => {
+                if(userCred) {
+                    console.log(userCred);
+                }
+            })
+            .catch((err) => {
+                console.log(err.message);
+                if(err.message.includes("user-not-found")){
+                    setAlert(true);
+                    setAlertMsg("Invalid Id : User Not Found");
+                }
+                else if(err.message.includes("wrong-password")){
+                    setAlert(true);
+                    setAlertMsg("Password Mismatch");
+                }
+                else{
+                    setAlert(true);
+                    setAlertMsg("Temporarily disabled due to many failed login");
+                }
+                setInterval(() => {
+                    setAlert(false);
+                }, 4000);
+            });
+        }
+    };
 
     return (
         <div className="w-full py-6">
@@ -48,13 +92,29 @@ const SignUp = () => {
 
                     {/* alert section */}
 
+                    <AnimatePresence>
+                        {alert && (
+                            <motion.p 
+                            key={"AlertMessage"}
+                            {...fadeInOut}
+                            className="text-red-500"
+                            >
+                                {alertMsg}
+                            </motion.p>
+                        )}
+                    </AnimatePresence>
+
                     {/* login button */}
                     {!isLogin ? (
-                        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center justify-center w-full py-3 rounded-xl hover:bg-emerald-400 cursor-pointer bg-emerald-500">
+                        <motion.div 
+                        onClick={createNewUser}
+                        whileTap={{ scale: 0.9 }} className="flex items-center justify-center w-full py-3 rounded-xl hover:bg-emerald-400 cursor-pointer bg-emerald-500">
                         <p className="text-xl text-white">Sign Up</p>
                     </motion.div>
                     ) : (
-                        <motion.div whileTap={{ scale: 0.9 }} className="flex items-center justify-center w-full py-3 rounded-xl hover:bg-emerald-400 cursor-pointer bg-emerald-500">
+                        <motion.div 
+                        onClick={loginWithEmailPassword}
+                        whileTap={{ scale: 0.9 }} className="flex items-center justify-center w-full py-3 rounded-xl hover:bg-emerald-400 cursor-pointer bg-emerald-500">
                         <p className="text-xl text-white">Login</p>
                     </motion.div>
                     )}

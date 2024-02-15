@@ -40,7 +40,7 @@ const UserAuthInput = ({
             >
                 <Icon className="text-text555 text-2xl" />
                 <input
-                    type={isPass && showPass ? "text" : "password"}
+                    type={isPass && showPass ? "password" : "text"}
                     placeholder={placeholder}
                     className="flex-1 w-full h-full py-2 outline-none border-none bg-transparent text-text555 text-lg"
                     value={value}
@@ -49,9 +49,9 @@ const UserAuthInput = ({
                 {isPass && (
                     <motion.div onClick={() => setShowPass(!showPass)} whileTap={{ scale: 0.9 }} className="cursor-pointer">
                         {showPass ? (
-                            <FaEye className="text-text555 text-2xl" />
+                            <FaEyeSlash className="text-text555 text-2xl"/>
                         ) : (
-                            <FaEyeSlash className="text-text555 text-2xl" />
+                            <FaEye className="text-text555 text-2xl" />
                         )}
                     </motion.div>
                 )}

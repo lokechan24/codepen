@@ -6,10 +6,11 @@ import { motion } from "framer-motion";
 import { Link, Route, Routes } from "react-router-dom";
 import { Logo } from "../assets";
 import { Projects, SignUp } from "../container";
+import { useSelector } from "react-redux";
 
 const Home = () => {
     const [isSideMenu, setSideMenu] = useState(false);
-    const [user, setUser] = useState(["loke"]);
+const user = useSelector((state) => state.user?.user);
 
     return (
         <>
@@ -59,7 +60,7 @@ const Home = () => {
                         />
                     </div>
                     {/* profil section */}
-                    {user && (
+                    {!user && (
                         <motion.div 
                         whileTap={{ scale: 0.9 }} 
                         className="flex items-center justify-center gap-3"
