@@ -7,10 +7,11 @@ import { Link, Route, Routes } from "react-router-dom";
 import { Logo } from "../assets";
 import { Projects, SignUp } from "../container";
 import { useSelector } from "react-redux";
+import { UserProfileDetails } from "../components";
 
 const Home = () => {
     const [isSideMenu, setSideMenu] = useState(false);
-const user = useSelector((state) => state.user?.user);
+    const user = useSelector((state) => state.user?.user);
 
     return (
         <>
@@ -39,9 +40,9 @@ const user = useSelector((state) => state.user?.user);
 
                     {/* Home nav */}
 
-                    {user && (
-                        <Link to={"/home/projects"} 
-                        className="flex items-center justify-center gap-2">
+                    {!user && (
+                        <Link to={"/home/projects"}
+                            className="flex items-center justify-center gap-2">
                             <MdHome className="text-primaryText text-xl" />
                             <p className="text-lg text-primaryText">Home</p>
                         </Link>
@@ -56,14 +57,14 @@ const user = useSelector((state) => state.user?.user);
                         <FaSearchengin className="text-2xl text-primaryText" />
                         <input
                             type="text"
-                            className="flex-1 px-4 py-1 text-xl bg-transparent outline-none border-none text-primaryText placeholder:text-gray-600" placeholder="Search Here..." 
+                            className="flex-1 px-4 py-1 text-xl bg-transparent outline-none border-none text-primaryText placeholder:text-gray-600" placeholder="Search Here..."
                         />
                     </div>
                     {/* profil section */}
                     {!user && (
-                        <motion.div 
-                        whileTap={{ scale: 0.9 }} 
-                        className="flex items-center justify-center gap-3"
+                        <motion.div
+                            whileTap={{ scale: 0.9 }}
+                            className="flex items-center justify-center gap-3"
                         >
                             <Link
                                 to={"/home/auth"}
@@ -74,14 +75,14 @@ const user = useSelector((state) => state.user?.user);
                         </motion.div>
                     )}
 
-                    {user && <div></div>}
+                    {user && <UserProfileDetails />}
 
                 </div>
                 {/* bottom section */}
                 <div className="w-full">
                     <Routes>
-                        <Route path="/*" element={<Projects/>}/>
-                        <Route path="/auth" element={<SignUp/>}/>
+                        <Route path="/*" element={<Projects />} />
+                        <Route path="/auth" element={<SignUp />} />
                     </Routes>
                 </div>
             </div>
