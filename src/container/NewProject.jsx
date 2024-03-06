@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronDown, FaCss3, FaHtml5, FaJs } from 'react-icons/fa';
 import { FcSettings } from 'react-icons/fc';
 import { SplitPane } from 'react-split-pane';
-import {CodeMirror} from '@uiw/react-codemirror';
+import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { Pane } from 'split-pane-react';
-import 'split-pane-react/esm/themes/default.css';
+//import { Pane } from 'split-pane-react';
+import { Link } from 'react-router-dom';
+import { Logo } from "../assets";
+import { AnimatePresence, motion } from 'framer-motion';
 
 const NewProject = () => {
   const[html, setHtml] = useState("");
   const [css, setCss] = useState("");
   const [js, setJs] = useState("");
   const [output, setOutput] = useState("");
+  const [title, setTitle] = useState("Untitle");
+  const [isTitle, setisTitle] = useState("");
+
+  useEffect(() => {
+    updateOutput()
+  }, [html, css, js])
 
   const updateOutput = () => {
     const combinedOutput = `
     <html>
       <head>
-      <style>${css}</style>
+        <style>${css}</style>
       </head>
       <body>
-      ${html}
+        ${html}
       <script>${js}</script>
       </body>
     </html>
     `;
+    setOutput(combinedOutput)
   }
 
   return (
@@ -34,7 +43,36 @@ const NewProject = () => {
       {/* alert section */}
 
       {/* header section */}
+      <header className="w-full flex items-center justify-between px-12 py-4">
+        <div className="flex items-center justify-center gap-6">
+          <Link to={"/home/projects"}>
+            <img className="w-32 h-auto object-contain" src={Logo} />
+          </Link>
+          <div className="flex flex-col items-start justify-start">
+            {/* title */}
+            <div className="flex items-center justify-center gap-3">
+              <AnimatePresence>
+                { isTitle ? (
+                <>
+                <motion.input key={"TitleInput"} type="text" placeholder="Your Title" value={title} onchange={(e) => setTitle(e.Target.value)} />
+                </>
+                ) : (
+                <>
+                  <motion.p
+                    key={"titleLabel"}
+                    className="px-3 py-2 text-white text-lg" 
+                  >
+                    {title}
+                  </motion.p>
+                </>
+                ) }
+              </AnimatePresence>
+            </div>
 
+            {/* follow */}
+          </div>
+        </div>
+      </header>
       {/* coding section */}
 
       <div>
@@ -136,7 +174,11 @@ const NewProject = () => {
           <div className='bg-white' 
           style={{overflow: "hidden", height:"100%"}}
           >
-
+            <iframe
+              title='Result'
+              srcDoc={output}
+              style={{border: "none", width: "100%", height: "100%"}}
+            />
           </div>
         </SplitPane>
       </div>
