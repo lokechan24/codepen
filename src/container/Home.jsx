@@ -5,7 +5,7 @@ import { FaSearchengin } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { Link, Route, Routes } from "react-router-dom";
 import { Logo } from "../assets";
-import { Projects, SignUp } from "../container";
+import { NewProject, Projects, SignUp } from "../container";
 import { useSelector } from "react-redux";
 import { UserProfileDetails } from "../components";
 
@@ -30,6 +30,7 @@ const Home = () => {
                     <Link to={"/home"}>
                         <img src={Logo} alt="Logo" className="object-contain w-72 h-auto" />
                     </Link>
+
                     {/* Start coding */}
 
                     <Link to={"/newProject"}>

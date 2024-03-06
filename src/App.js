@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { Home } from "./container";
+import { Home, NewProject } from "./container";
 import { auth, db } from "./config/firebase.config";
 import { setDoc, doc } from "firebase/firestore";
 import { Spinner } from "./components";
-import { UseDispatch, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SET_USER } from "./context/action/userAction";
+import { FaCog } from 'react-icons/fa'; // Import the correct icon
 
 const App = () => {
   const navigate = useNavigate();
@@ -40,19 +41,20 @@ const App = () => {
     <>
       {isLoading ? (
         <div className="w-screen h-screen flex items-center justify-center overflow-hidden">
-          <Spinner/>
+          <Spinner />
         </div>
       ) : (
         <div className="w-screen h-screen flex items-start justify-start overflow-hidden">
           <Routes>
             <Route path="/home/*" element={<Home />} />
+            <Route path="/newProject" element={<NewProject />} />
             {/* if the router not matching */}
             <Route path="*" element={<Navigate to={"/home"} />} />
           </Routes>
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
 export default App;
