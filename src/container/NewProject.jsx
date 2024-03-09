@@ -46,18 +46,24 @@ const NewProject = () => {
   const saveProgram = async () => {
     const id = `${Date.now()}`
     const _doc = {
-      id : id,
-      title : title,
-      html : html,
-      css : css,
-      js : js,
-      output : output,
-      user : user
+      id: id,
+      title: title,
+      html: html,
+      css: css,
+      js: js,
+      output: output,
+      user: user
     }
-    await setDoc(doc(db, "projects", id), _doc).then((res) => {
+    await setDoc(doc(db, "projects", id), _doc)
+      .then((res) => {
+        setAlert(true);
+      })
+      .catch((err) => console.log(err));
 
-    }).catch((err) => console.log(err))
-  }
+    setInterval(() => {
+      setAlert(false);
+    }, 2000);
+  };
 
   return (
     <>
@@ -80,13 +86,13 @@ const NewProject = () => {
                 <AnimatePresence>
                   {isTitle ? (
                     <>
-                      <motion.input 
-                      key={"TitleInput"} 
-                      type="text" 
-                      placeholder="Your Title" 
-                      className="px-3 py-2 rounded-md bg-transparent text-primaryText text-base outline-none border-none"
-                      value={title} 
-                      onChange={(e) => setTitle(e.Target.value)} 
+                      <motion.input
+                        key={"TitleInput"}
+                        type="text"
+                        placeholder="Your Title"
+                        className="px-3 py-2 rounded-md bg-transparent text-primaryText text-base outline-none border-none"
+                        value={title}
+                        onChange={(e) => setTitle(e.Target.value)}
                       />
                     </>
                   ) : (
@@ -108,10 +114,10 @@ const NewProject = () => {
                         <MdCheck className="text-2xl text-emerald-500" />
                       </motion.div>
                     </>
-                    ) : (
+                  ) : (
                     <>
                       <motion.div key={"MdEdit"} whileTap={{ scale: 0.9 }} className="cursor-pointer" onClick={() => setisTitle(true)} >
-                      <MdEdit className="text-2xl text-emerald-500" />
+                        <MdEdit className="text-2xl text-emerald-500" />
                       </motion.div>
                     </>
                   )}
@@ -121,11 +127,11 @@ const NewProject = () => {
               {/* follow */}
               <div className='flex items-center justify-center px-3 -mt-2 gap-2'>
                 <p className='text-primaryText text-sm'>
-                  {user?.displayName 
-                  ? user?.displayName
-                  : `${user?. email.split("@") [0]}` }
+                  {user?.displayName
+                    ? user?.displayName
+                    : `${user?.email.split("@")[0]}`}
                 </p>
-                <motion.p whileTap={{scale : 0.9}} className="text-[10px] bg-emerald-500 rounded-sm px-2 py-[1px] text-primary font-semibold cursor-pointer">
+                <motion.p whileTap={{ scale: 0.9 }} className="text-[10px] bg-emerald-500 rounded-sm px-2 py-[1px] text-primary font-semibold cursor-pointer">
                   + Follow
                 </motion.p>
               </div>
@@ -135,12 +141,12 @@ const NewProject = () => {
           {/* user section */}
           {user && (
             <div className="flex items-center justify-center gap-4">
-            <motion.button onClick={saveProgram} whileTap={{scale : 0.9}} className="px-6 py-4 bg-primaryText cursor-pointer text-base text-primary font-semibold rounded-md"
-            >
-              save
-            </motion.button>
-            <UserProfileDetails />
-          </div>
+              <motion.button onClick={saveProgram} whileTap={{ scale: 0.9 }} className="px-6 py-4 bg-primaryText cursor-pointer text-base text-primary font-semibold rounded-md"
+              >
+                save
+              </motion.button>
+              <UserProfileDetails />
+            </div>
           )};
         </header>
         {/* coding section */}
