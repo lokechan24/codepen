@@ -10,11 +10,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { MdCheck, MdOutlineEdit } from "react-icons/md";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase.config";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-const NewProject = () => {
+const ViewProject = () => {
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
   const [js, setJs] = useState("");
@@ -24,11 +24,29 @@ const NewProject = () => {
   const [alert, setAlert] = useState(false);
 
   const user = useSelector((state) => state.user.user);
+  const projects = useSelector((state) => state.projects.projects);
+
+  const [project, setProject] = useState(null);
+
+  const { projectId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     updateOutput();
   }, [html, css, js]);
+
+  useEffect(() => {
+    if (projects && projectId) {
+      setProject(projects?.find((project) => project.id === projectId));
+      if (project) {
+        console.log(project?.html);
+        setHtml(project?.html);
+        setCss(project?.css);
+        setJs(project?.js);
+        setOutput(project?.output);
+      }
+    }
+  }, [projectId, project]);
 
   const updateOutput = () => {
     // Create the combined output
@@ -47,19 +65,16 @@ const NewProject = () => {
   };
 
   const saveProgram = async () => {
-    const id = `${Date.now()}`;
     const _doc = {
-      id: id,
-      title: title,
       html: html,
       css: css,
       js: js,
       output: output,
-      user: user,
     };
 
     console.log(_doc);
-    await setDoc(doc(db, "Projects", id), _doc)
+
+    await updateDoc(doc(db, "Projects", project?.id), _doc)
       .then((res) => {
         setAlert(true);
       })
@@ -83,53 +98,18 @@ const NewProject = () => {
             <div className="flex flex-col items-start justify-start">
               {/* title */}
               <div className="flex items-center justify-center gap-3">
-                <AnimatePresence>
-                  {isTitle ? (
-                    <motion.input
-                      key={"TitleInput"}
-                      type="text"
-                      className="px-3 py-2 rounded-md bg-transparent text-primaryText text-base  outline-none border-none"
-                      placeholder="Your Title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
-                  ) : (
-                    <motion.p
-                      key={"TitleLabel"}
-                      className="px-3 py-2  text-white text-lg"
-                    >
-                      {title}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-
-                <AnimatePresence>
-                  {isTitle ? (
-                    <motion.div
-                      key={"MdCheck"}
-                      className="cursor-pointer"
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setIsTitle(false)}
-                    >
-                      <MdCheck className="text-2xl text-emerald-500" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key={"MdEdit"}
-                      className="cursor-pointer"
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setIsTitle(true)}
-                    >
-                      <MdOutlineEdit className="text-2xl text-primaryText" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <motion.p
+                  key={"TitleLabel"}
+                  className="px-3 py-2  text-white text-lg"
+                >
+                  {project?.title}
+                </motion.p>
               </div>
               <div className="flex items-center justify-center px-3 -mt-2 gap-2">
                 <p className="text-primaryText text-sm">
-                  {user?.displayName
-                    ? user?.displayName
-                    : `${user.email.split("@")[0]}`}
+                  {project?.user?.displayName
+                    ? project?.user?.displayName
+                    : `${project?.user.email.split("@")[0]}`}
                 </p>
                 <motion.p
                   whileTap={{ scale: 0.9 }}
@@ -141,13 +121,15 @@ const NewProject = () => {
             </div>
           </div>
           <div className="flex items-center justify-center gap-4">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={saveProgram}
-              className="px-4 py-4 bg-primaryText rounded-xl cursor-pointer text-base text-primary font-semibold"
-            >
-              Save
-            </motion.button>
+            {project?.user?.uid === user?.uid && (
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={saveProgram}
+                className="px-4 py-4 bg-primaryText rounded-xl cursor-pointer text-base text-primary font-semibold"
+              >
+                Update
+              </motion.button>
+            )}
             {user && <UserProfileDetails />}
           </div>
         </header>
@@ -265,4 +247,4 @@ const NewProject = () => {
   );
 };
 
-export default NewProject;
+export default ViewProject;
